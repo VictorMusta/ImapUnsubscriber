@@ -3,35 +3,34 @@ import email
 from bs4 import BeautifulSoup
 import requests
 
-# Remplacez les valeurs par votre adresse mail et votre mot de passe
-# Attention: l'utilisation de votre mot de passe principal n'est pas recommandée pour des raisons de sécurité.
+# Replace the values with your email address and password
+# Warning: using your main password is not recommended for security reasons.
 
-
-# Pour une adresse Gmail:
-# Je vous conseille de créer un "mot de passe d'application" sur votre compte google
-# afin de ne pas utiliser votre mot de passe principal.
-# Pour cela, rendez-vous sur https://myaccount.google.com/security-checkup
-# cliquez sur "Mot de passe d'application" dans la section "Connexion à Google".
-# Créez un mot de passe d'application pour l'application "Autre (nom personnalisé)".
-# Utilisez ce mot de passe d'application pour vous connecter à votre boîte mail.
+# For a Gmail address:
+# I recommend creating an "application-specific password" on your Google account
+# to avoid using your main password.
+# To do this, go to https://myaccount.google.com/security-checkup
+# click on "App passwords" in the "Signing in to Google" section.
+# Create an app password for the "Other (custom name)" application.
+# Use this app password to log in to your mailbox.
 your_email = 'TEMPLATE'
 your_password = 'TEMPLATE'
 
-# WARNING : De nombreux sites web malveillants utilisent des liens de désabonnement pour envoyer ses malwares / ransomwares.
-# Veuillez utiliser ce script avec précaution et vérifier que les liens de désabonnement sont bien légitimes.
-# Ce script ne les vérifiera pas
-# et les suivra aveuglément.
-# Il est recommandé de vérifier manuellement les liens de désabonnement avant de les suivre.
+# WARNING: Many malicious websites use unsubscribe links to send malware/ransomware.
+# Please use this script with caution and verify that the unsubscribe links are legitimate.
+# This script will not verify them
+# and will follow them blindly.
+# It is recommended to manually verify the unsubscribe links before following them.
 
-# Connexion à la boîte mail
+# Connect to the mailbox
 mail = imaplib.IMAP4_SSL('imap.gmail.com')
 mail.login(your_email, your_password)
 mail.select('inbox')
 
-# Recherche des emails contenant "unsubscribe"
+# Search for emails containing "unsubscribe"
 status, messages = mail.search(None, '(BODY "unsubscribe")')
 
-# Extraction des liens de désabonnement
+# Extract unsubscribe links
 for num in messages[0].split():
     status, data = mail.fetch(num, '(RFC822)')
     msg = email.message_from_bytes(data[0][1])
@@ -42,12 +41,12 @@ for num in messages[0].split():
                 for link in soup.find_all('a', href=True):
                     if 'unsubscribe' in link['href']:
                         unsubscribe_link = link['href']
-                        # Automatisation du désabonnement
+                        # Automate the unsubscription
                         response = requests.get(unsubscribe_link)
                         if response.status_code == 200:
-                            print(f'Désabonné avec succès de {unsubscribe_link}')
+                            print(f'Successfully unsubscribed from {unsubscribe_link}')
                         else:
-                            print(f'Échec du désabonnement de {unsubscribe_link}')
+                            print(f'Failed to unsubscribe from {unsubscribe_link}')
 
-# Déconnexion de la boîte mail
+# Disconnect from the mailbox
 mail.logout()
