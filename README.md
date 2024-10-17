@@ -4,6 +4,7 @@
 ## Introduction
 
 This script automates the process of unsubscribing from unwanted emails by searching for "unsubscribe" links in your inbox and following them. It is designed to work with Gmail and uses an application-specific password for secure access.
+Please note that most of the services that sends you newsletter will require an aditionnal action to validate your un-subscription. This script will not go further than just following the link.
 
 
 ## Security Warning
